@@ -24,9 +24,9 @@ jobs:
           echo "apiVersion: v1
              kind: Secret
              metadata:
-               creationtimestamp: null
-               name: kbot
-               namespace: kbot_demo
+              creationtimestamp: null
+              name: kbot
+              namespace: kbot_demo
              data:
                TELE_TOKEN: ${{ secrets.TELE_TOKEN }}" > secret.yaml
 
