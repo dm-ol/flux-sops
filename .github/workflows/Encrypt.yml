@@ -9,7 +9,6 @@ jobs:
   encrypt_and_save:
     runs-on: ubuntu-latest
     steps:
-      - id: 'auth'
       - name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v0.4.0'
         with:
