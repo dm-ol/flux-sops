@@ -32,10 +32,7 @@ jobs:
 
       - name: Download SOPS Configuration
         run: |
-          mkdir sops-config
-          git clone https://github.com/dm-ol/flux-sops.git sops-config
-          cp sops-config/sops_config.yaml sops_config.yaml
-          rm -rf sops-config
+          curl -o sops_config.yaml https://raw.githubusercontent.com/dm-ol/flux-sops/main/sops_config.yaml
 
       - name: Encrypt Secret Manifest
         run: |
