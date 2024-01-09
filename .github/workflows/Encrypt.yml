@@ -30,13 +30,9 @@ jobs:
              data:
                token: ${{ secrets.TELE_TOKEN }}" > secret.yaml
 
-      - name: Download SOPS Configuration
-        run: |
-          curl -o sops_config.yaml https://raw.githubusercontent.com/dm-ol/flux-sops/main/sops_config.yaml
-
       - name: Encrypt Secret Manifest
         run: |
-          sops --config sops_config.yaml -e --in-place --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
+          sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
 
       - name: Commit encrypted manifest to the repository
         run: |
