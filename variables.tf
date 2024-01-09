@@ -42,5 +42,11 @@ variable "GITHUB_TOKEN" {
 variable "FLUX_GITHUB_REPO" {
   type        = string
   default     = "gke-flux"
-  description = "GitHub repository"
+  description = "Flux GitHub repository"
+}
+
+variable "FLUX_GITHUB_TARGET_PATH" {
+  type        = string
+  default     = "clusters"
+  description = "Flux manifests subdirectory"
 }
