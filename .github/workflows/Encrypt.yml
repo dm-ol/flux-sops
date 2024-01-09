@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  google authentication:
+  google_authentication:
     steps:
     - id: 'auth'
     name: 'Authenticate to Google Cloud'
