@@ -1,0 +1,3 @@
+creation_rules:
+  - path_regex: .*.yaml
+    kms: projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux
