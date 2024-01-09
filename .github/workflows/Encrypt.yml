@@ -28,7 +28,7 @@ jobs:
               name: kbot
               namespace: kbot_demo
              data:
-               TELE_TOKEN: ${{ secrets.TELE_TOKEN }}" > secret.yaml
+               token: ${{ secrets.TELE_TOKEN }}" > secret.yaml
 
       - name: Encrypt Secret Manifest
         run: |
