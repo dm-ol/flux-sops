@@ -22,13 +22,13 @@ jobs:
       - name: Decrypt Kubernetes Secret Manifest
         run: |
           echo "apiVersion: v1
-             kind: Secret
-             metadata:
-              creationtimestamp: null
-              name: kbot
-              namespace: kbot_demo
-             data:
-               token: ${{ secrets.TELE_TOKEN }}" > secret.yaml
+                kind: Secret
+                metadata:
+                  creationtimestamp: null
+                  name: kbot
+                  namespace: kbot_demo
+                data:
+                  token: ${{ secrets.TELE_TOKEN }}" > secret.yaml
 
       - name: Encrypt Secret Manifest
         run: |
