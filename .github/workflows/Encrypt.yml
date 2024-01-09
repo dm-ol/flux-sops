@@ -30,9 +30,9 @@ jobs:
              data:
                token: ${{ secrets.TELE_TOKEN }}" > secret.yaml
 
-      - name: Copy SOPS Configuration
+      - name: Download SOPS Configuration
         run: |
-          cp path/to/sops_config.yaml sops_config.yaml
+          curl -LO https://raw.githubusercontent.com/dm-ol/flux-sops/main/sops_config.yaml
 
       - name: Encrypt Secret Manifest
         run: |
