@@ -23,6 +23,18 @@ jobs:
           workload_identity_provider: 'projects/307830987280/locations/global/workloadIdentityPools/github/providers/my-repo'
           service_account: 'actions@learning-405310.iam.gserviceaccount.com'
 
+      - name: 'secrets'
+        uses: 'google-github-actions/get-secretmanager-secrets@v2'
+        with:
+            secrets: |-
+              token:learning-405310/TELE_TOKEN
+
+      # Example of using the output
+      - name: 'publish'
+        uses: 'foo/bar@v1'
+        env:
+          TOKEN: '${{ steps.secrets.outputs.token }}'
+
       - name: Install SOPS
         run: |
           curl -LO https://github.com/getsops/sops/releases/download/v3.7.3/sops-v3.7.3.linux.amd64
@@ -31,16 +43,16 @@ jobs:
 
       - name: Create Kubernetes Secret Manifest
         run: |
-          echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ secrets.TELE_TOKEN }}" > secret.yaml
+          echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ steps.secrets.outputs.token }}" > secret.yaml
 
-      - name: Encrypt Secret Manifest
-        run: |
-          sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
+      #- name: Encrypt Secret Manifest
+      #  run: |
+      #    sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
 
       - name: Commit encrypted manifest to the repository
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
-          git add secret-enc.yaml
+          git add secret.yaml
           git commit -m "Add encrypted secret manifest"
           git push origin main
