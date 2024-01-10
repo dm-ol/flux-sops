@@ -9,7 +9,8 @@ jobs:
   encrypt_and_save:
     runs-on: ubuntu-latest
     permissions:
-      contents: 'read'
+      contents: read
+      pull-requests: write
       id-token: 'write'
     steps:
       - name: Checkout repository
@@ -22,6 +23,11 @@ jobs:
           project_id: 'learning-405310'
           workload_identity_provider: 'projects/307830987280/locations/global/workloadIdentityPools/github/providers/actions'
           service_account: 'actions@learning-405310.iam.gserviceaccount.com'
+
+      - name: 'Access secret'
+        run: |-
+          curl https://secretmanager.googleapis.com/v1/projects/307830987280/secrets/TELE_TOKEN/versions/1:access \
+          --header "Authorization: Bearer ${{ steps.auth.outputs.access_token }}"
 
       #- name: 'secrets'
       #  uses: 'google-github-actions/get-secretmanager-secrets@v2'
@@ -37,9 +43,9 @@ jobs:
 
       - name: Install SOPS
         run: |
-          curl -LO https://github.com/getsops/sops/releases/download/v3.7.3/sops-v3.8.1.linux.amd64
-          chmod +x ./sops-v3.8.1.linux.amd64
-          sudo mv ./sops-v3.8.1.linux.amd64 /usr/local/bin/sops
+          curl -LO https://github.com/getsops/sops/releases/download/v3.7.3/sops-v3.7.3.linux.amd64
+          chmod +x ./sops-v3.7.3.linux.amd64
+          sudo mv ./sops-v3.7.3.linux.amd64 /usr/local/bin/sops
 
       - name: Create Kubernetes Secret Manifest
         run: |
