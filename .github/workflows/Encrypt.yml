@@ -9,14 +9,8 @@ jobs:
   encrypt_and_save:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v0.4.0'
-        with:
-          workload_identity_provider: 'projects/learning-405310/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-          service_account: 'github-actions@learning-405310.iam.gserviceaccount.com'
-    
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install SOPS
         run: |
@@ -28,6 +22,11 @@ jobs:
         run: |
           echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ secrets.TELE_TOKEN }}" > secret.yaml
 
+      - name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          service_account: 'github-actions@learning-405310.iam.gserviceaccount.com'
+      
       - name: Encrypt Secret Manifest
         run: |
           sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
