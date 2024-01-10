@@ -20,7 +20,7 @@ jobs:
         uses: 'google-github-actions/auth@v2'
         with:
           project_id: 'learning-405310'
-          workload_identity_provider: 'projects/307830987280/locations/global/workloadIdentityPools/github/providers/my-repo'
+          workload_identity_provider: 'projects/307830987280/locations/global/workloadIdentityPools/github/providers/actions'
           service_account: 'actions@learning-405310.iam.gserviceaccount.com'
 
       - name: 'secrets'
@@ -45,14 +45,14 @@ jobs:
         run: |
           echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ steps.secrets.outputs.token }}" > secret.yaml
 
-      #- name: Encrypt Secret Manifest
-      #  run: |
-      #    sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
+      - name: Encrypt Secret Manifest
+        run: |
+          sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
 
       - name: Commit encrypted manifest to the repository
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
-          git add secret.yaml
+          git add secret-enc.yaml
           git commit -m "Add encrypted secret manifest"
           git push origin main
