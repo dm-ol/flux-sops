@@ -30,10 +30,10 @@ jobs:
               token:learning-405310/TELE_TOKEN
 
       # Example of using the output
-      - name: 'publish'
-        uses: 'foo/bar@v1'
-        env:
-          TOKEN: '${{ steps.secrets.outputs.token }}'
+      #- name: 'publish'
+      #  uses: 'foo/bar@v1'
+      #  env:
+      #    TOKEN: '${{ steps.secrets.outputs.token }}'
 
       - name: Install SOPS
         run: |
