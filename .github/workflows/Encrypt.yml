@@ -25,8 +25,8 @@ jobs:
 
       - name: 'Access secret'
         run: |-
-        curl https://secretmanager.googleapis.com/v1/projects/307830987280/secrets/TELE_TOKEN/versions/1:access \
-        --header "Authorization: Bearer ${{ steps.auth.outputs.access_token }}"
+          curl https://secretmanager.googleapis.com/v1/projects/307830987280/secrets/TELE_TOKEN/versions/1:access \
+          --header "Authorization: Bearer ${{ steps.auth.outputs.access_token }}"
 
       #- name: 'secrets'
       #  uses: 'google-github-actions/get-secretmanager-secrets@v2'
