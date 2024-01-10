@@ -21,7 +21,7 @@ jobs:
         with:
           project_id: 'learning-405310'
           workload_identity_provider: 'projects/307830987280/locations/global/workloadIdentityPools/github/providers/my-repo'
-          service_account: '307830987280-compute@developer.gserviceaccount.com'
+          service_account: 'github-actions@learning-405310.iam.gserviceaccount.com'
 
       - name: Install SOPS
         run: |
