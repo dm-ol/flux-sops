@@ -15,6 +15,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          project_id: 'learning-405310'
+          workload_identity_provider: 'projects/307830987280/locations/global/workloadIdentityPools/github/providers/my-repo'
+
       - name: Install SOPS
         run: |
           curl -LO https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64
@@ -25,13 +31,6 @@ jobs:
         run: |
           echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ secrets.TELE_TOKEN }}" > secret.yaml
 
-      - name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          project_id: 'learning-405310'
-          workload_identity_provider: 'projects/307830987280/locations/global/workloadIdentityPools/github/providers/my-repo'
-          service_account: 'github-actions@learning-405310.iam.gserviceaccount.com'
-      
       - name: Encrypt Secret Manifest
         run: |
           sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
