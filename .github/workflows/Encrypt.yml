@@ -23,11 +23,11 @@ jobs:
           workload_identity_provider: 'projects/307830987280/locations/global/workloadIdentityPools/github/providers/actions'
           service_account: 'actions@learning-405310.iam.gserviceaccount.com'
 
-      - name: 'secrets'
-        uses: 'google-github-actions/get-secretmanager-secrets@v2'
-        with:
-            secrets: |-
-              token:learning-405310/TELE_TOKEN
+      #- name: 'secrets'
+      #  uses: 'google-github-actions/get-secretmanager-secrets@v2'
+      #  with:
+      #    secrets: |-
+      #       token:learning-405310/TELE_TOKEN
 
       # Example of using the output
       #- name: 'publish'
@@ -43,7 +43,7 @@ jobs:
 
       - name: Create Kubernetes Secret Manifest
         run: |
-          echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ steps.secrets.outputs.token }}" > secret.yaml
+          echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ secrets.TELE_TOKEN }}" > secret.yaml
 
       - name: Encrypt Secret Manifest
         run: |
