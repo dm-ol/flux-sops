@@ -69,5 +69,5 @@ jobs:
         commit_message: "Add encrypted secret manifest"
         target_branch: main
         files: secret-enc.yaml
+        access_token: ${{ secrets.GITHUB_TOKEN }}
         # remote_repository: https://github.com/owner/another_repository
-        # access_token: ${{ github.token }}
