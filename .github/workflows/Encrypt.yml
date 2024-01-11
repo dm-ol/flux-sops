@@ -55,9 +55,9 @@ jobs:
 
       - name: Commit encrypted manifest to the repository
         run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add secret-enc.yaml
           git commit -m "Add encrypted secret manifest"
-          git push
+          git push origin main
           
