@@ -12,7 +12,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
         with:
           persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
@@ -59,10 +59,8 @@ jobs:
           git config --global user.name "GitHub Actions"
           git add secret-enc.yaml
           git commit -m "Add encrypted secret manifest"
-      
-      - name: Push changes to the repository
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
