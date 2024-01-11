@@ -6,7 +6,7 @@ jobs:
   encrypt_and_save:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
       id-token: write
     steps:
