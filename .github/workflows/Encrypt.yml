@@ -56,4 +56,10 @@ jobs:
           git config --global user.name "GitHub Actions"
           git add secret-enc.yaml
           git commit -m "Add encrypted secret manifest"
-          git push origin main
+      
+      - name: Push changes to the repository
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          branch: ${{ github.ref }}
+          
