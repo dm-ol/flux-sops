@@ -6,12 +6,12 @@ jobs:
   encrypt_and_save:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
       id-token: write
     steps:
 
-      - name: Checkout repository
+      - name: 'Checkout repository'
         uses: actions/checkout@v4
         with:
           persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
@@ -26,50 +26,35 @@ jobs:
           workload_identity_provider: 'projects/307830987280/locations/global/workloadIdentityPools/git-hub/providers/actions'
           service_account: 'actions@learning-405310.iam.gserviceaccount.com'
       
-      - name: 'Pull secret'
+      - name: 'Pull secret from Google Secret Manager'
         id: 'secrets'
         uses: 'google-github-actions/get-secretmanager-secrets@v2'
         with:
           secrets: |-
             token:learning-405310/TELE_TOKEN
-
-      # Example of using the output
-      #- name: 'publish'
-      #  uses: 'foo/bar@v1'
-      #  env:
-      #    TOKEN: '${{ steps.secrets.outputs.token }}'
-
-      - name: Install SOPS
+      
+      - name: 'Install SOPS'
         run: |
           curl -LO https://github.com/getsops/sops/releases/download/v3.7.3/sops-v3.7.3.linux.amd64
           chmod +x ./sops-v3.7.3.linux.amd64
           sudo mv ./sops-v3.7.3.linux.amd64 /usr/local/bin/sops
 
-      - name: Create Kubernetes Secret Manifest
+      - name: 'Create Kubernetes Secret Manifest'
         run: |
           echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ steps.secrets.outputs.token }}" > secret.yaml
 
-      - name: Encrypt Secret Manifest
+      - name: 'Encrypt Secret Manifest'
         run: |
           sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
 
-  push_secret:
-    needs: encrypt_and_save
-    runs-on: ubuntu-latest
-    permissions:
-        contents: write
-
-    steps:
-    - uses: actions/checkout@v4
-          
-    - uses: GuillaumeFalourd/git-commit-push@v1.3
-      with:
-        email: github-actions@github.com
-        name: github-actions
-        commit_message: "Add encrypted secret manifest"
-        target_branch: main
-        files: secret-enc.yaml
-        access_token: ${{ secrets.GITHUB_TOKEN }}
-        force: true
-
-        # remote_repository: https://github.com/owner/another_repository
+      - name: 'Push secret Manifest to GitHub repository'
+        uses: GuillaumeFalourd/git-commit-push@v1.3
+        with:
+          email: github-actions@github.com
+          name: github-actions
+          commit_message: "Add encrypted secret manifest"
+          target_branch: main
+          files: secret-enc.yaml
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+          force: true
+          # remote_repository: https://github.com/owner/another_repository
