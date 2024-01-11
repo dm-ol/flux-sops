@@ -53,7 +53,7 @@ jobs:
           email: github-actions@github.com
           name: github-actions
           commit_message: "Add encrypted secret manifest"
-          remote_repository: https://github.com/dm-ol/gke-flux/
+          remote_repository: https://github.com/dm-ol/gke-flux
           target_branch: main
           files: secret-enc.yaml
           access_token: ${{ secrets.GITHUB_TOKEN }}
