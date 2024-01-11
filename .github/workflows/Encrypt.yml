@@ -41,7 +41,7 @@ jobs:
 
       - name: 'Create Kubernetes Secret Manifest'
         run: |
-          echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ steps.secrets.outputs.token }}" > secret-enc.yaml
+          echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ steps.secrets.outputs.token | base64 }}" > secret-enc.yaml
       
       - name: 'Push secret Manifest to GitHub repository'
         uses: GuillaumeFalourd/git-commit-push@v1.3
