@@ -1,9 +1,6 @@
 name: Encrypt Secret Manifest and Save in Repository
 
-on:
-  push:
-    branches:
-      - main
+on:  push
 
 jobs:
   encrypt_and_save:
@@ -11,29 +8,30 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-      id-token: 'write'
+      id-token: write
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
 
       - name: 'Authenticate to Google Cloud'
+        id: 'auth'
         uses: 'google-github-actions/auth@v2'
         with:
           token_format: 'access_token'
           project_id: 'learning-405310'
-          workload_identity_provider: 'projects/307830987280/locations/global/workloadIdentityPools/github/providers/actions'
+          workload_identity_provider: 'projects/307830987280/locations/global/workloadIdentityPools/git-hub/providers/actions'
           service_account: 'actions@learning-405310.iam.gserviceaccount.com'
-
-      - name: 'Access secret'
-        run: |-
-          curl https://secretmanager.googleapis.com/v1/projects/307830987280/secrets/TELE_TOKEN/versions/1:access \
-          --header "Authorization: Bearer ${{ steps.auth.outputs.access_token }}"
-
-      #- name: 'secrets'
-      #  uses: 'google-github-actions/get-secretmanager-secrets@v2'
-      #  with:
-      #    secrets: |-
-      #       token:learning-405310/TELE_TOKEN
+      
+      - name: 'Pull secret'
+        id: 'secrets'
+        uses: 'google-github-actions/get-secretmanager-secrets@v2'
+        with:
+          secrets: |-
+            token:learning-405310/TELE_TOKEN
 
       # Example of using the output
       #- name: 'publish'
@@ -49,27 +47,29 @@ jobs:
 
       - name: Create Kubernetes Secret Manifest
         run: |
-          echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ secrets.TELE_TOKEN }}" > secret.yaml
+          echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot_demo \ndata: \n  token: ${{ steps.secrets.outputs.token }}" > secret.yaml
 
       - name: Encrypt Secret Manifest
         run: |
           sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
 
-      - name: Commit encrypted manifest to the repository
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add secret-enc.yaml
-          git commit -m "Add encrypted secret manifest"
-          git push origin main
+  push_secret:
+    needs: encrypt_and_save
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
 
-          - name: Commit encrypted manifest to the repository
-        run2: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add secret-enc.yaml
-          git commit -m "Add encrypted secret manifest"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - uses: actions/checkout@v4
+          
+    - uses: GuillaumeFalourd/git-commit-push@v1.3
+      with:
+        email: github-actions@github.com
+        name: github-actions
+        commit_message: "Add encrypted secret manifest"
+        target_branch: main
+        files: secret-enc.yaml
+        access_token: ${{ secrets.GITHUB_TOKEN }}
+        force: true
+
+        # remote_repository: https://github.com/owner/another_repository

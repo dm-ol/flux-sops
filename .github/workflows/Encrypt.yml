@@ -53,23 +53,15 @@ jobs:
         run: |
           sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
 
-  push_secret:
-    needs: encrypt_and_save
-    runs-on: ubuntu-latest
-    permissions:
-        contents: write
+      - name: 'Push secret Manifest'
+        uses: GuillaumeFalourd/git-commit-push@v1.3
+        with:
+          email: github-actions@github.com
+          name: github-actions
+          commit_message: "Add encrypted secret manifest"
+          target_branch: main
+          files: secret-enc.yaml
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+          force: true
 
-    steps:
-    - uses: actions/checkout@v4
-          
-    - uses: GuillaumeFalourd/git-commit-push@v1.3
-      with:
-        email: github-actions@github.com
-        name: github-actions
-        commit_message: "Add encrypted secret manifest"
-        target_branch: main
-        files: secret-enc.yaml
-        access_token: ${{ secrets.GITHUB_TOKEN }}
-        force: true
-
-        # remote_repository: https://github.com/owner/another_repository
+          # remote_repository: https://github.com/owner/another_repository
