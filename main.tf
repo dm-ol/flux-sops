@@ -55,11 +55,8 @@ module "gke-workload-identity" {
   version         = "~> 2.2"
   project_id      = var.GOOGLE_PROJECT
   location        = "global"
-  keyring         = "sops-flux-2"
+  keyring         = "sops-flux-3"
   keys            = ["sops-key-flux"]
   prevent_destroy = false
 
-  module_depends_on = [
-    module.flux_bootstrap
-  ]
 }
