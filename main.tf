@@ -45,6 +45,9 @@ module "gke-workload-identity" {
   roles               = ["roles/cloudkms.cryptoKeyEncrypterDecrypter"]
   annotate_k8s_sa     = true
 
+  module_depends_on = [
+    module.flux_bootstrap
+  ]
 }
 
  module "kms" {
@@ -56,4 +59,7 @@ module "gke-workload-identity" {
   keys            = ["sops-key-flux"]
   prevent_destroy = false
 
+  module_depends_on = [
+    module.flux_bootstrap
+  ]
 }

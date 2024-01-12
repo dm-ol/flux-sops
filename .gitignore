@@ -4,4 +4,4 @@ terraform.tfstate
 apps.credentials.json
 .terraform.tfstate.lock.info
 terraform.tfstate.backup
-add_to_main.tf
+flux-bckp.yaml
