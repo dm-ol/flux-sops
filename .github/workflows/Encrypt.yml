@@ -45,7 +45,7 @@ jobs:
 
       - name: 'Encrypt Secret Manifest'
         run: |
-          sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux-2/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
+          sops -e -gcp-kms projects/learning-405310/locations/global/keyRings/sops-flux/cryptoKeys/sops-key-flux --encrypted-regex '^(token)$' secret.yaml > secret-enc.yaml
       
       - name: 'Push secret Manifest to GitHub repository'
         uses: GuillaumeFalourd/git-commit-push@v1.3
