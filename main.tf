@@ -3,6 +3,11 @@ provider "google" {
   region  = var.GOOGLE_REGION
 }
 
+module "tls_private_key" {
+  source    = "github.com/den-vasyliev/tf-hashicorp-tls-keys"
+  algorithm = "RSA"
+}
+
 module "github_repository" {
   source                   = "github.com/den-vasyliev/tf-github-repository"
   github_owner             = var.GITHUB_OWNER
@@ -28,7 +33,24 @@ module "flux_bootstrap" {
   config_path       = module.gke_cluster.kubeconfig
 }
 
-module "tls_private_key" {
-  source    = "github.com/den-vasyliev/tf-hashicorp-tls-keys"
-  algorithm = "RSA"
+module "gke-workload-identity" {
+  source              = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
+  use_existing_k8s_sa = true
+  name                = "kustomize_controller"
+  namespace           = "flux-system"
+  project_id          = var.GOOGLE_PROJECT
+  cluster_name        = "main"
+  location            = var.GOOGLE_REGION
+  roles               = ["roles/cloudkms.cryptoKeyEncrypterDecrypter"]
+  annotate_k8s_sa     = true
+}
+
+module "kms" {
+  source          = "terraform-google-modules/kms/google"
+  version         = "~> 2.2"
+  project_id      = "var.GOOGLE_PROJECT"
+  location        = "global"
+  keyring         = "sops-flux"
+  keys            = ["sops-key-flux"]
+  prevent_destroy = false
 }
