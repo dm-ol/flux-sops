@@ -36,7 +36,7 @@ spec:
   interval: 1m0s
   ref:
     branch: main
-  url: https://github.com/dm-ol/kbot.git
+  url: https://github.com/dm-ol/kbot
 ```
 
 9. Створюємо маніфест Helm release `gke-flux/clusters/kbot/kbot-hr.yaml`:
