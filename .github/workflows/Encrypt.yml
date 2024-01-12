@@ -41,7 +41,7 @@ jobs:
 
       - name: 'Create Kubernetes Secret Manifest'
         run: |
-          echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot \ndata: \n  token: $(echo -n "${{ steps.secrets.outputs.token }}" | base64)" > secret.yaml
+          echo -e "apiVersion: v1 \nkind: Secret \nmetadata: \n  creationtimestamp: null \n  name: kbot \n  namespace: kbot \ndata: \n  token: $(echo -n "${{ steps.secrets.outputs.token }}" | tr -d '\n' | base64 -w 0)" > secret.yaml
 
       - name: 'Encrypt Secret Manifest'
         run: |
