@@ -34,23 +34,25 @@ module "flux_bootstrap" {
 }
 
 module "gke-workload-identity" {
-  source              = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
-  use_existing_k8s_sa = true
-  name                = "kustomize_controller"
-  namespace           = "flux-system"
-  project_id          = var.GOOGLE_PROJECT
-  cluster_name        = "main"
-  location            = var.GOOGLE_REGION
-  roles               = ["roles/cloudkms.cryptoKeyEncrypterDecrypter"]
-  annotate_k8s_sa     = true
+  source              = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
+  use_existing_k8s_sa = true
+  name                = "kustomize_controller"
+  namespace           = "flux-system"
+  project_id          = var.GOOGLE_PROJECT
+  cluster_name        = "main"
+  location            = var.GOOGLE_REGION
+  roles               = ["roles/cloudkms.cryptoKeyEncrypterDecrypter"]
+  annotate_k8s_sa     = true
+
 }
 
 module "kms" {
-  source          = "terraform-google-modules/kms/google"
-  version         = "~> 2.2"
-  project_id      = "var.GOOGLE_PROJECT"
-  location        = "global"
-  keyring         = "sops-flux"
-  keys            = ["sops-key-flux"]
-  prevent_destroy = false
+  source          = "terraform-google-modules/kms/google"
+  version         = "~> 2.2"
+  project_id      = "var.GOOGLE_PROJECT"
+  location        = "global"
+  keyring         = "sops-flux"
+  keys            = ["sops-key-flux"]
+  prevent_destroy = false
+
 }
