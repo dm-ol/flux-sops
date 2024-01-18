@@ -169,7 +169,7 @@ patches:
 
      Далі створюємо провайдера: `gcloud iam workload-identity-pools providers create-oidc "actions" --project="learning-405310" --location="global" --workload-identity-pool="github" --display-name="My GitHub repo Provider" --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository" --issuer-uri="https://token.actions.githubusercontent.com"`, та перевіряємо створення`gcloud iam workload-identity-pools providers describe "actions" --project="learning-405310" --location="global" --workload-identity-pool="github" --format="value(name)"` і отримуємо відповідь `projects/307830987280/locations/global/workloadIdentityPools/github/providers/actions
 
-25. Зв'язуємо сервісний аккаунт з WI: `export REPO="dm-ol/flux-sops"`, потім  `export WORKLOAD_IDENTITY_POOL_ID="projects/307830987280/locations/global/workloadIdentityPools/git-hub" ` та  `gcloud iam service-accounts add-iam-policy-binding "actions@learning-405310.iam.gserviceaccount.com" --project="learning-405310" --role="roles/iam.workloadIdentityUser" --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${REPO}"`.
+25. Зв'язуємо сервісний аккаунт з WI: ```export REPO="dm-ol/flux-sops"```, потім  ```export WORKLOAD_IDENTITY_POOL_ID="projects/307830987280/locations/global/workloadIdentityPools/git-hub" ``` та  ```gcloud iam service-accounts add-iam-policy-binding "actions@learning-405310.iam.gserviceaccount.com" --project="learning-405310" --role="roles/iam.workloadIdentityUser" --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${REPO}"```.
 
 26. Створюємо workflow для GitHub Actions:
 
