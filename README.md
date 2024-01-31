@@ -67,7 +67,7 @@ spec:
 ```yaml
 apiVersion: v1
 data:
-  TELE_TOKEN: NjA4MzU4Mjg0NTpBQUhNa203LTRscHhLS3B2bjN5UmVUM0dNX1ZkbDRPSGF1QQ==
+  TELE_TOKEN: NjA4MzU4Mjg0xhpBQUhNa203LTRscHhLS3B2bjs3UmVUM0dNX1ZkbDRPSGF1QQ==
 kind: Secret
 metadata:
   creationtimestamp: null
