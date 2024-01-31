@@ -6,7 +6,7 @@
 
 3. Запускаємо `tf validate`  для перевірки конфігурації
 
-4. Додаємо токен GitHub `export TF_VAR_GITHUB_TOKEN=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 `
+4. Додаємо токен GitHub `export TF_VAR_GITHUB_TOKEN=ghp_VQUBiZTTdfsAtm1cKD3ndqpNdXasdA3C5wwUo2 `
 
 3. Запускаємо `tf apply -var-file=vars.tfvars` для запуску Terraform
 
